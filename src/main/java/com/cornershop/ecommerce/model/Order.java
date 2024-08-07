@@ -1,15 +1,10 @@
 package com.cornershop.ecommerce.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import java.time.LocalDate;
-import java.util.Date;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -33,6 +28,6 @@ public class Order {
 
     private Double price;
 
-    private LocalDate purchaseDate;
+    private LocalDateTime purchaseDate;
 
 }

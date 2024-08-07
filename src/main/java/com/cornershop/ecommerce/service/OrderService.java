@@ -28,7 +28,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class OrderService {
-
+    
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     @Autowired
     private ProductRepository productRepository;
@@ -67,6 +67,7 @@ public class OrderService {
             order.setQuantity(orderRequestInfo.getQuantity());
             order.setProductId(orderRequestInfo.getProductId());
             order.setCustomerId(orderRequest.getCustomerId());
+            order.setPurchaseDate(LocalDateTime.parse(formatter.format(LocalDateTime.now())));
 
 
             order.setPrice(product.getPrice());
