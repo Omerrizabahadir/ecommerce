@@ -28,7 +28,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class OrderService {
-    
+
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     @Autowired
     private ProductRepository productRepository;
@@ -67,7 +67,7 @@ public class OrderService {
             order.setQuantity(orderRequestInfo.getQuantity());
             order.setProductId(orderRequestInfo.getProductId());
             order.setCustomerId(orderRequest.getCustomerId());
-            order.setPurchaseDate(LocalDateTime.parse(formatter.format(LocalDateTime.now())));
+            order.setPurchaseDate(LocalDateTime.parse(formatter.format(LocalDateTime.now()),formatter));
 
 
             order.setPrice(product.getPrice());
@@ -106,7 +106,7 @@ public class OrderService {
             helper.setTo("omrbahadir@gmail.com");
             helper.setSubject("Merhaba " + firstName + ", Siparişiniz İşleme Alındı");
 
-            String content = "<p>Merhaba " + firstName + "</p><p>Toplam maliyet " + totalCost + "</p>";
+            String content = "<p>Merhaba " + firstName + "</p><p>Sipariş ettiğiniz ürünlerin toplam maliyet :" + totalCost + "</p>";
             helper.setText(content, true);
 
             mailSender.send(message);
