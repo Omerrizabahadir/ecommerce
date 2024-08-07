@@ -1,27 +1,27 @@
 package com.cornershop.ecommerce.service;
 
 import com.cornershop.ecommerce.exception.ProductNotFoundException;
-import com.cornershop.ecommerce.model.Category;
 import com.cornershop.ecommerce.model.Product;
 import com.cornershop.ecommerce.repository.ProductRepository;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Objects;
+
 @Service
 public class ProductService {
 
+    private static final String UPLOAD_DIR = "uploads";
     @Autowired
     private ProductRepository productRepository;
-
-    private static final String UPLOAD_DIR = "uploads";
 
     public Product createProduct(MultipartFile file, Product product) {
         if (Objects.nonNull(file)) {
@@ -51,7 +51,7 @@ public class ProductService {
             Files.createDirectories(uploadPath);
             filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -63,6 +63,13 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
+        //ürün silindiğinde uploads içine kaydedilen resim yoluda silinsin
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id + " product is not found"));
+        try {
+            Files.delete(Paths.get(product.getImage()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         productRepository.deleteById(id);
     }
 

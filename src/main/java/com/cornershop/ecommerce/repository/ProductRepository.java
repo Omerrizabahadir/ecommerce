@@ -26,4 +26,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.id =:id")
     Optional<Product> getProductById(@Param("id") Long id);
+
+    //silmek istediğin categorye ait 1 tane ürün  varsa silmeyecek
+    @Query("SELECT COUNT(p) FROM Product p WHERE p.categoryId = :categoryId")
+    Long getProductCountOfCategoryId(@Param("categoryId") Long categoryId);
 }

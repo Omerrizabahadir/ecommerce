@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/order")
@@ -23,5 +20,13 @@ public class OrderController {
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Boolean> doOrder(@RequestBody OrderRequest orderRequest) {
         return new ResponseEntity<>(orderService.doOrder(orderRequest), HttpStatus.OK);
+    }
+
+    //Mail gönderim test etmek için
+    @GetMapping("/test")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Void> test() {
+        orderService.sendMail("", "", 0d);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
