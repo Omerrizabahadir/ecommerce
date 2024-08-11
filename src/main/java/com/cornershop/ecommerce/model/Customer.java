@@ -1,15 +1,10 @@
 package com.cornershop.ecommerce.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Table(name = "customer")
+@Table(name = "customer",uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 @Entity
 @Getter
 @Setter
@@ -18,6 +13,7 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false,unique = true)
     private String email;
     @Column(name = "first_name")
     private String firstName;
