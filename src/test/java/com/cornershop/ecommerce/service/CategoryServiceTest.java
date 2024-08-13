@@ -3,6 +3,7 @@ package com.cornershop.ecommerce.service;
 import com.cornershop.ecommerce.exception.CategoryDeleteException;
 import com.cornershop.ecommerce.exception.CategoryDuplicateException;
 import com.cornershop.ecommerce.exception.CategoryNotFoundException;
+import com.cornershop.ecommerce.helper.CategoryDOFactory;
 import com.cornershop.ecommerce.model.Category;
 import com.cornershop.ecommerce.repository.CategoryRepository;
 import com.cornershop.ecommerce.repository.ProductRepository;
@@ -33,19 +34,20 @@ public class CategoryServiceTest {
     @Mock
     private ProductRepository productRepository;
 
+    private CategoryDOFactory categoryDOFactory;
+
     @BeforeEach                                     //Bu anotasyon, JUnit testlerinin her biri çalışmadan önce setUp metodunun çağrılmasını sağlar. Bu metod, testlerinizi çalıştırmadan önce gerekli hazırlıkları yapar.
     public void  setUp(){
+
         MockitoAnnotations.openMocks(this);
+        this.categoryDOFactory = new CategoryDOFactory();
     }
 
     @Test
     void createCategory_succesfull(){
-        Category category = new Category();
-        category.setName("TEST_CATEGORY");
+        Category category = categoryDOFactory.getCategoryWithoutId();
 
-        Category savedCategory = new Category();
-        savedCategory.setName(category.getName());
-        savedCategory.setId(1L);
+        Category savedCategory = categoryDOFactory.getCategoryWithId(1L);category.setName("TEST_CATEGORY");
 
         when(categoryRepository.findCategoryByName(category.getName())).thenReturn(Optional.empty());    // //findCategoryByName'i "TEST_CATEGORY" ile çağırdığımda empty dön diyoruz
         when(categoryRepository.save(category)).thenReturn(savedCategory);                                      //category 'yi id'si null name 'i "TEST CATEGORY" çağırınca savedCategory dön
@@ -58,12 +60,9 @@ public class CategoryServiceTest {
     }
     @Test
     public void createCategory_fail(){
-        Category category = new Category();
-        category.setName("TEST CATEGORY");
+        Category category = categoryDOFactory.getCategoryWithoutId();
 
-        Category savedCategory = new Category();
-        savedCategory.setName(category.getName());
-        savedCategory.setId(1L);
+        Category savedCategory = categoryDOFactory.getCategoryWithId(1L);
 
         //ben dönmesini istediğim neyse onu buraya-->findCategoryByName(category.getName())) yazarım.
         when(categoryRepository.findCategoryByName(category.getName())).thenReturn(Optional.ofNullable(savedCategory));   //findCategoryByName'i "TEST CATEGORY" gelirse  -->savedCategory 'yi dön
@@ -110,14 +109,14 @@ public class CategoryServiceTest {
     @Test
     void getCategory_successful(){
         Long categoryId = 1L;
-        Category category = new Category();
-        category.setId(categoryId);
+        Category category = categoryDOFactory.getCategoryWithId(categoryId);
 
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
 
         Category response = categoryService.getCategory(categoryId);
 
         assertEquals(category.getId(), response.getId());
+        assertEquals(category.getName(), response.getName());
         verify(categoryRepository,times(1)).findById(categoryId);
 
     }
@@ -131,40 +130,30 @@ public class CategoryServiceTest {
         CategoryNotFoundException thrown =  assertThrows(CategoryNotFoundException.class,
                 () -> categoryService.getCategory(categoryId));
 
-
+        assertEquals("Category not found id : 1", thrown.getMessage());
         verify(categoryRepository, times(1)).findById(categoryId);
 
     }
     @Test
-    void getAllCategoryList(){
+    void getAllCategoryList_successful(){
 
-        Category category1 = new Category();
-        category1.setId(1L);
-        category1.setName("Category Test1");
+        List <Category> categoryList  = categoryDOFactory.getCategoryListWithId();
 
-        Category category2 = new Category();
-        category2.setId(1L);
-        category2.setName("Category Test2");
+        when(categoryRepository.findAll()).thenReturn(categoryList);
 
-        List <Category> categories = Arrays.asList(category1,category2);
+        List <Category> response = categoryService.getAllCategoryList();
 
-        when(categoryRepository.findAll()).thenReturn(categories);
-
-        List <Category> respond = categoryService.getAllCategoryList();
-
-        assertEquals(2,respond.size());
+        assertEquals(categoryList.size(),response.size());
+        assertEquals(categoryList.get(0).getName(), response.get(0).getName());
+        assertEquals(categoryList.get(0).getId(), response.get(0).getId());
+        assertEquals(categoryList.get(2).getName(), response.get(2).getName());
+        assertEquals(categoryList.get(2).getId(), response.get(2).getId());
         verify(categoryRepository,times(1)).findAll();
 
     }
     @Test
-    void updateCategory(){
-        Category category = new Category();
-        category.setId(1L);
-        category.setName("Category Test");
-
-        Category updatedCategory = new Category();
-        updatedCategory.setId(1L);
-        updatedCategory.setName("Category Test");
+    void updateCategory_successful(){
+        Category category = categoryDOFactory.getCategoryWithId(1L);
 
         when(categoryRepository.save(category)).thenReturn(category);
 
