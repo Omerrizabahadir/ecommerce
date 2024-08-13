@@ -39,7 +39,7 @@ public class ProductService {
     }
 
     public Product getProduct(Long id) {
-        return productRepository.getProductById(id).orElseThrow(() -> new ProductNotFoundException("Product Not Found id : " + id));
+        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product Not Found id : " + id));
     }
 
     private String saveFile(MultipartFile file, String productName) {
