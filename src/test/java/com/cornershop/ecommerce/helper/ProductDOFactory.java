@@ -14,7 +14,7 @@ public class ProductDOFactory {
         product1.setName("macbook");
         product1.setPrice(50002D);
         product1.setCategoryId(categoryId);
-        product1.setImage("uploads/macbook.png");
+        product1.setImage("uploads/macbook.txt");
 
         Product product2 = new Product();
         product2.setId(2L);
@@ -38,7 +38,7 @@ public class ProductDOFactory {
         product.setId(1L);
         product.setActive(true);
         product.setUnitsInStock(5L);
-        product.setName("macbook");
+        product.setName("test.txt");
         product.setPrice(50002D);
         product.setCategoryId(categoryId);
         product.setImage("uploads/macbook.png");

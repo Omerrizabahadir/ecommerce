@@ -35,7 +35,7 @@ public class CategoryService {
     public void deleteCategory(Long id) {
         Long productCountOfCategory = productRepository.getProductCountOfCategoryId(id);
         if(productCountOfCategory > 0){       //html sayfasında silmek istediğin category'ye ait ürün varsa ve 1 taneyse silmesin
-            throw  new CategoryDeleteException("You can not delete this category because category has" + productCountOfCategory + "products");
+            throw  new CategoryDeleteException("You can not delete this category because category has " + productCountOfCategory + " products");
         }
         categoryRepository.deleteById(id);
     }

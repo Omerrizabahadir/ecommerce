@@ -68,7 +68,8 @@ public class ProductService {
         try {
             Files.delete(Paths.get(product.getImage()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("IO exception while deleting image of " + product.getName());
+
         }
         productRepository.deleteById(id);
     }

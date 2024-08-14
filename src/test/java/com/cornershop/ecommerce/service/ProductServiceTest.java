@@ -4,7 +4,6 @@ import com.cornershop.ecommerce.exception.ProductNotFoundException;
 import com.cornershop.ecommerce.helper.ProductDOFactory;
 import com.cornershop.ecommerce.model.Product;
 import com.cornershop.ecommerce.repository.ProductRepository;
-import io.jsonwebtoken.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
+
 
 public class ProductServiceTest {
 
@@ -196,25 +195,13 @@ public class ProductServiceTest {
     }
 
     @Test
-    void activeOrDeActiveProduct_successful() {
-        Long productId = 1L;
-        boolean isActive = true;
+    void deleteProduct_success() throws java.io.IOException {
 
-        //void method bir şey döndürmediğinden bunu ekledik--> Mockito.doNothing().when
-        Mockito.doNothing().when(productRepository).updateProductActive(isActive, productId);
-
-        //yine activeOrDeActiveProduct metodu void method old. için response da dönmez. Sadece productServiceteki metodu gösterdik
-        productService.activeOrDeActiveProduct(productId, isActive);
-
-        //activeOrDeActiveProduct metodu void method old. için assertEquls, assertTrue,vb... olmayacak
-        verify(productRepository, times(1)).updateProductActive(isActive, productId);
-    }
-    @Test
-    void deleteProduct_successful() throws IOException {
-        Long productId = 1L;
         String filePath = "uploads/test.txt";   //test.txt dosyasını uploads içinde oluşturmalısın
 
         File file = new File(filePath);
+        file.createNewFile();
+        Long productId = 1L;
 
         Product product = new Product();
         product.setId(productId);
@@ -230,15 +217,31 @@ public class ProductServiceTest {
         response yoksa assert te yok
 
          */
-        verify(productRepository,times(1)).findById(productId);
-        verify(productRepository,times(1)).deleteById(productId);
+        verify(productRepository, times(1)).findById(productId);
+        verify(productRepository, times(1)).deleteById(productId);
 
     }
-   /* @Test
+
+    @Test
+    void activeOrDeActiveProduct_successful() {
+        Long productId = 1L;
+        boolean isActive = true;
+
+        //void method bir şey döndürmediğinden bunu ekledik--> Mockito.doNothing().when
+        Mockito.doNothing().when(productRepository).updateProductActive(isActive, productId);
+
+        //yine activeOrDeActiveProduct metodu void method old. için response da dönmez. Sadece productServiceteki metodu gösterdik
+        productService.activeOrDeActiveProduct(productId, isActive);
+
+        //activeOrDeActiveProduct metodu void method old. için assertEquls, assertTrue,vb... olmayacak
+        verify(productRepository, times(1)).updateProductActive(isActive, productId);
+    }
+
+    @Test
     void deleteProduct_fail() {
         Long productId = 1L;
         Product product = productDOFactory.getProductWithId(productId);
-        product.setImage("test");
+        product.setImage("test.txt");
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
@@ -250,6 +253,18 @@ public class ProductServiceTest {
         verify(productRepository, times(0)).deleteById(productId);
     }
 
+    @Test
+    void getAllProductList_success() {
+        Long categoryId = 3L;
+        List<Product> productList = productDOFactory.getProductListWithId(categoryId);
 
-    */
+        when(productRepository.getAllProductList()).thenReturn(productList);
+
+        List<Product> response = productService.getAllProductList();
+
+        assertEquals(productList.size(), response.size());
+        assertEquals(productList.get(0).getPrice(), response.get(0).getPrice());
+        assertEquals(productList.get(0).getName(), response.get(0).getName());
+        verify(productRepository, times(1)).getAllProductList();
+    }
 }
