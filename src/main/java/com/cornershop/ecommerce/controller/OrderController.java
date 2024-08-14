@@ -22,11 +22,5 @@ public class OrderController {
         return new ResponseEntity<>(orderService.doOrder(orderRequest), HttpStatus.OK);
     }
 
-    //Mail gönderim test etmek için
-    @GetMapping("/test")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Void> test() {
-        orderService.sendMail("", "", 0d);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+
 }
