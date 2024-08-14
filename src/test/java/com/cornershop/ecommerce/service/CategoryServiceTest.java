@@ -99,7 +99,7 @@ public class CategoryServiceTest {
         CategoryDeleteException thrown = Assertions.assertThrows(CategoryDeleteException.class,
                 () -> categoryService.deleteCategory(categoryId));
 
-        assertEquals("you can not delete this category because category has 1 products",thrown.getMessage());
+        assertEquals("You can not delete this category because category has 1 products",thrown.getMessage());
         verify(productRepository, times(1)).getProductCountOfCategoryId(categoryId);
         verify(categoryRepository, times(0)).deleteById(categoryId);
     }
