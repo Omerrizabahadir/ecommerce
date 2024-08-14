@@ -130,7 +130,7 @@ public class OrderServiceTest {
        verify(productRepository,times(1)).findById(productId);
     }
     @Test
-    void doOrder_CustomerNotFoundException(){
+    void doOrder_fail_CustomerNotFoundException(){
         Long productId=3L;
         Long customerId = 5L;
         int quantity = 2;
