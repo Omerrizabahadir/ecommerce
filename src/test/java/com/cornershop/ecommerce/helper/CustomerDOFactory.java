@@ -7,8 +7,10 @@ public class CustomerDOFactory {
     public Customer getCustomer() {
         Customer customer = new Customer();
         customer.setId(1L);
-        customer.setEmail("hkdemircan01@gmail.com");
-        customer.setFirstName("test");
+        customer.setEmail("test@example.com");
+        customer.setFirstName("testFirstName");
+        customer.setLastName("testLastName");
+        customer.setPassword("Password1!");
         customer.setRoles("ROLE_USER");
 
         return customer;
